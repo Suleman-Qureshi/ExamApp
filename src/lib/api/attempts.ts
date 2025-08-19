@@ -9,7 +9,7 @@ const API_BASE_URL = "http://localhost:5000/api/attempts";
  * @param {Object} attemptData - The attempt data to submit
  * @returns {Promise<Object>} - Response with the created attempt
  */
-export async function submitExamAttempt(attemptData: any) {
+export async function submitExamAttempt(attemptData: unknown) {
   const token = localStorage.getItem("token");
 
   if (!token) {
@@ -74,7 +74,7 @@ export async function fetchStudentAttempts() {
  * @param {string} examId - The ID of the exam
  * @returns {Promise<Object>} - Response with attempts array
  */
-export async function fetchExamAttempts(examId: any) {
+export async function fetchExamAttempts(examId: unknown) {
   const token = localStorage.getItem("token");
 
   if (!token) {
@@ -106,7 +106,7 @@ export async function fetchExamAttempts(examId: any) {
  * @param {string} attemptId - The ID of the attempt to fetch
  * @returns {Promise<Object>} - Response with attempt object
  */
-export async function fetchAttemptById(attemptId: any) {
+export async function fetchAttemptById(attemptId: unknown) {
   const token = localStorage.getItem("token");
 
   if (!token) {
@@ -133,7 +133,7 @@ export async function fetchAttemptById(attemptId: any) {
   }
 }
 
-export async function fetchExamStatistics(examId: any) {
+export async function fetchExamStatistics(examId: unknown) {
   const token = localStorage.getItem("token");
 
   if (!token) {

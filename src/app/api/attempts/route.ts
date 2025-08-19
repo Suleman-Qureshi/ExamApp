@@ -7,7 +7,7 @@ import { requireAuth, handleAuthError } from '../../../lib/auth';
 
 export const runtime = 'nodejs';
 export const revalidate = 0;
-
+interface CustomError {message:string;statusCode?:number;}
 export async function POST(request: Request) {
   // Auth first
   let user;
@@ -43,10 +43,11 @@ export async function POST(request: Request) {
     await connectDB();
     const attempt = await Attempt.create({ ...body, student: user.id });
     return NextResponse.json(attempt, { status: 201 });
-  } catch (e: any) {
+  } catch (e: unknown) {
+    const error =e as CustomError;
     console.error(e);
     return NextResponse.json(
-      { message: e?.message || 'Bad Request' },
+      { message: error.message || 'Bad Request' },
       { status: 400 }
     );
   }

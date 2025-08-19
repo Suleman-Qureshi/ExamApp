@@ -5,7 +5,7 @@ import User from '../../../../models/User';
 
 export const runtime = 'nodejs';
 export const revalidate = 0;
-
+interface CustomError {message:string;statusCode?:number;code?:number;keyPattern?:{email:string};}
 type RegisterBody = {
   email?: string;
   password?: string;
@@ -62,12 +62,13 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({ message: 'Registered successfully' }, { status: 201 });
-  } catch (e: any) {
-    // Handle unique-index race condition too
-    if (e?.code === 11000 && e?.keyPattern?.email) {
+  } catch (e: unknown) {
+    const error = e as CustomError;
+     // Handle unique-index race condition too
+    if (error.code === 11000 && error.keyPattern?.email) {
       return NextResponse.json({ message: 'Email already registered' }, { status: 409 });
     }
     console.error(e);
-    return NextResponse.json({ message: e?.message || 'Server error' }, { status: 500 });
+    return NextResponse.json({ message: error.message || 'Server error' }, { status: 500 });
   }
 }

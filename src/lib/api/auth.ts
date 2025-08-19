@@ -12,7 +12,7 @@ async function jsonFetch<T>(path: string, init: RequestInit) {
     },
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error((data as any)?.message || 'Request failed');
+  if (!res.ok) throw new Error((data)?.message || 'Request failed');
   return data as T;
 }
 

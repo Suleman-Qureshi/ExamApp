@@ -40,7 +40,7 @@ export async function fetchExams() {
  * @param {string} examId - The ID of the exam to fetch
  * @returns {Promise<Object>} - Response with exam object
  */
-export async function fetchExamById(examId:any) {
+export async function fetchExamById(examId: unknown) {
   const token = localStorage.getItem("token");
 
   if (!token) {
@@ -72,7 +72,7 @@ export async function fetchExamById(examId:any) {
  * @param {Object} examData - The exam data to create
  * @returns {Promise<Object>} - Response with created exam
  */
-export async function createExam(examData:any) {
+export async function createExam(examData: unknown) {
   const token = localStorage.getItem("token");
 
   if (!token) {
@@ -107,7 +107,7 @@ export async function createExam(examData:any) {
  * @param {Object} examData - The updated exam data
  * @returns {Promise<Object>} - Updated exam object
  */
-export async function updateExam(examId: any, examData: any) {
+export async function updateExam(examId: unknown, examData: unknown) {
   const token = localStorage.getItem("token");
 
   if (!token) {
@@ -141,7 +141,7 @@ export async function updateExam(examId: any, examData: any) {
  * @param {string} examId - The ID of the exam to delete
  * @returns {Promise<Object>} - Response with success message
  */
-export async function deleteExam(examId:any) {
+export async function deleteExam(examId: unknown) {
   const token = localStorage.getItem("token");
 
   if (!token) {

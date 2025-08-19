@@ -4,7 +4,7 @@ import { isValidObjectId } from 'mongoose';
 import { connectDB } from '../../../lib/db';
 import Question from '../../../models/Question';
 import { requireAuth, requireRole, handleAuthError } from '../../../lib/auth';
-
+interface CustomError {message:string;statusCode?:number;}
 export const runtime = 'nodejs';
 export const revalidate = 0;
 
@@ -43,11 +43,12 @@ export async function POST(request: Request) {
     await connectDB();
     const q = await Question.create(body);
     return NextResponse.json(q, { status: 201 });
-  } catch (e: any) {
-    console.error(e);
-    return NextResponse.json(
-      { message: e?.message || 'Bad Request' },
-      { status: 400 }
-    );
-  }
+  } catch (e: unknown) {
+      const error =e as CustomError;
+      console.error(e);
+      return NextResponse.json(
+        { message: error.message || 'Bad Request' },
+        { status: 400 }
+      );
+    }
 }

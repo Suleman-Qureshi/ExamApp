@@ -64,9 +64,16 @@ export default function RegisterPage() {
 
       alert('Registration successful! Please log in.');
       router.push('/login');
-    } catch (err: any) {
-      alert(err?.message || 'Server error');
-    } finally {
+    } catch (err: unknown) {
+  const message =
+    err instanceof Error
+      ? err.message
+      : typeof err === 'string'
+        ? err
+        : 'Server error';
+
+  alert(message);
+} finally {
       setLoading(false);
     }
   }

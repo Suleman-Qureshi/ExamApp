@@ -9,7 +9,7 @@ const API_BASE_URL = "http://localhost:5000/api/questions";
  * @param {Object} questionData - The question data
  * @returns {Promise<Object>} - The created question object
  */
-export async function createQuestion(questionData:any) {
+export async function createQuestion(questionData:unknown) {
   const token = localStorage.getItem("token");
 
   if (!token) {
@@ -81,7 +81,7 @@ export async function fetchQuestionById(questionId:string) {
  * @param {Object} questionData - Updated question data
  * @returns {Promise<Object>} - The updated question object
  */
-export async function updateQuestion(questionId:string, questionData:any) {
+export async function updateQuestion(questionId:string, questionData:unknown) {
   const token = localStorage.getItem("token");
 
   if (!token) {

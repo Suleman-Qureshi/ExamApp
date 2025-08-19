@@ -108,9 +108,16 @@ export default function StudentExamsPage() {
         );
 
         setExamAttempts(groups);
-      } catch (e: any) {
-        setError(e?.message || 'Failed to load your exams.');
-      } finally {
+      }catch (err: unknown) {
+  const message =
+    err instanceof Error
+      ? err.message
+      : typeof err === 'string'
+        ? err
+        : 'Failed to load your exams';
+
+  alert(message);
+       } finally {
         setLoading(false);
       }
     }

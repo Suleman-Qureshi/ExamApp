@@ -19,9 +19,16 @@ export default function LoginForm() {
       localStorage.setItem('token', token);
       if (role === 'student') router.push('/student');
       else router.push('/teacher');
-    } catch (err: any) {
-      alert(err?.message || 'Login failed');
-    } finally {
+    } catch (err: unknown) {
+  const message =
+    err instanceof Error
+      ? err.message
+      : typeof err === 'string'
+        ? err
+        : 'Login failed';
+
+  alert(message);
+} finally {
       setLoading(false);
     }
   }

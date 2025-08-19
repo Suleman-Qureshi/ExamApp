@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import { connectDB } from '../../../../lib/db';
 // Update the path below if your User model is not located at this relative path
 import User from '../../../../models/User';
-
+interface CustomError {message:string;statusCode?:number;}
 export const runtime = 'nodejs';
 export const revalidate = 0;
 
@@ -61,8 +61,12 @@ export async function POST(request: Request) {
       { expiresIn: '7d' }
     );
     return NextResponse.json({ token, role: user.role });
-  } catch (e: any) {
-    console.error(e);
-    return NextResponse.json({ message: e?.message || 'Server error' }, { status: 500 });
-  }
+  }catch (e: unknown) {
+      const error =e as CustomError;
+      console.error(e);
+      return NextResponse.json(
+        { message: error.message || 'Bad Request' },
+        { status: 400 }
+      );
+    }
 }

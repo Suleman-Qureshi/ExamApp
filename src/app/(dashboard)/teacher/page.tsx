@@ -26,9 +26,12 @@ async function apiGet<T>(path: string): Promise<T> {
   if (!res.ok) throw new Error(data?.message || 'Request failed');
   return data as T;
 }
-
-async function apiPost<T>(path: string, body: any): Promise<T> {
+async function apiPost<T>({
+  path,
+  body,
+}: { path: string; body: unknown }): Promise<T> {
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+
   const res = await fetch(`${API_ROOT}${path}`, {
     method: 'POST',
     headers: {
@@ -37,15 +40,16 @@ async function apiPost<T>(path: string, body: any): Promise<T> {
     },
     body: JSON.stringify(body),
   });
+
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data?.message || 'Request failed');
+  if (!res.ok) throw new Error((data as { message?: string })?.message || 'Request failed');
   return data as T;
 }
+type ExamsResponse = Exam[] | { exams: Exam[] };
 
 async function fetchExams(): Promise<Exam[]> {
-  const data = await apiGet<any>('/exams');
-  // backend might return an array or { exams: [...] }
-  return Array.isArray(data) ? data : data.exams || [];
+  const data = await apiGet<ExamsResponse>('/exams');
+  return Array.isArray(data) ? data : data.exams ?? [];
 }
 
 async function createExam(payload: {
@@ -55,7 +59,7 @@ async function createExam(payload: {
   createdAt?: string;
 }): Promise<Exam> {
   // server will assign _id; no need to send custom id
-  return apiPost<Exam>('/exams', payload);
+  return apiPost<Exam>({ path: '/exams', body: payload });
 }
 
 /* -------- Page -------- */
@@ -87,9 +91,16 @@ export default function TeacherExamsPage() {
         setError(null);
         const list = await fetchExams();
         setExams(list);
-      } catch (e: any) {
-        setError(e?.message || 'Failed to load exams');
-      } finally {
+      } catch (err: unknown) {
+  const message =
+    err instanceof Error
+      ? err.message
+      : typeof err === 'string'
+        ? err
+        : 'Failed to load exams';
+
+  alert(message);
+      }finally {
         setLoading(false);
       }
     }
@@ -130,9 +141,16 @@ export default function TeacherExamsPage() {
       setLoading(true);
       const list = await fetchExams();
       setExams(list);
-    } catch (e: any) {
-      setError(e?.message || 'Failed to create exam');
-    } finally {
+    } catch (err: unknown) {
+  const message =
+    err instanceof Error
+      ? err.message
+      : typeof err === 'string'
+        ? err
+        : 'Failed to create exam';
+
+  alert(message);
+    }finally {
       setCreating(false);
       setLoading(false);
     }
@@ -167,7 +185,7 @@ export default function TeacherExamsPage() {
         ) : exams.length === 0 ? (
           <div className="no-exams-message" style={emptyStateStyle}>
             <p>No exams created yet.</p>
-            <p>Click "Create New Exam" to add one.</p>
+            <p>Click &rdquo;Create New Exam&ldquo; to add one.</p>
           </div>
         ) : (
           <div className="exam-cards-container" style={cardsGridStyle}>
